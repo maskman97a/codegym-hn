@@ -41,3 +41,4 @@ from orders o
          join order_detail od on o.oID = od.oID
          join product p on p.pID = od.pID
 group by o.oID, o.oDate;
+

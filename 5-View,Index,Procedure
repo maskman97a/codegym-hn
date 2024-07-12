@@ -1,0 +1,84 @@
+create database demo;
+
+use demo;
+
+create table Products
+(
+    Id                 int primary key auto_increment,
+    productCode        varchar(50),
+    productName        varchar(255),
+    productPrice       int,
+    productAmount      int,
+    productDescription varchar(500),
+    productStatus      varchar(50)
+);
+insert into Products (productCode, productName, productPrice, productAmount, productDescription, productStatus)
+values ('HANGNONG', 'Hàng nóng', 50000, 20, 'Đây là hàng nóng', 'Hàng mới'),
+       ('HANGLANH', 'Hàng lạnh', 50000, 20, 'Đây là hàng nóng', 'Hàng mới'),
+       ('HANGLIKENEW', 'Hàng like new', 50000, 20, 'Đây là hàng nóng', 'Hàng cũ'),
+       ('HANGNEW', 'Hàng mới', 50000, 20, 'Đây là hàng nóng', 'Hàng mới'),
+       ('HANG2HAND', 'Hàng 2 hand', 50000, 20, 'Đây là hàng nóng', 'Hàng cũ');
+
+create unique index p_un on Products (productCode);
+
+create index p_idx on Products (productName, productPrice);
+
+explain
+select *
+from Products
+where productName = 'Hàng 2 hand';
+
+create view v_product as
+select productCode, productName, productPrice, productStatus
+from Products;
+
+create or replace view v_product as
+select productCode, productName, productPrice, productStatus
+from Products
+where productName = 'Hàng 2 hand';
+
+drop view v_product;
+
+create procedure getAllProducts()
+begin
+    select * from Products;
+end;
+create procedure createNewProducts(
+    in p_productCode varchar(50),
+    in p_productName varchar(255),
+    in p_productPrice int,
+    in p_productStatus varchar(50),
+    in p_productAmount int,
+    in p_productDescription varchar(500))
+begin
+    insert into Products (productCode, productName, productPrice, productAmount, productDescription, productStatus)
+        value (p_productCode, p_productName, p_productPrice, p_productAmount, p_productDescription, p_productStatus);
+end;
+
+create procedure updateProducts(
+    in p_productId int,
+    in p_productCode varchar(50),
+    in p_productName varchar(255),
+    in p_productPrice int,
+    in p_productStatus varchar(50),
+    in p_productAmount int,
+    in p_productDescription varchar(500))
+begin
+    update Products
+    set productCode        = p_productCode,
+        productName= p_productName,
+        productPrice       = p_productPrice,
+        productStatus      =p_productStatus,
+        productAmount      = p_productAmount,
+        productDescription = p_productDescription
+    where id = p_productId;
+end;
+
+create procedure deleteProducts(
+    in p_productId int)
+begin
+    delete
+    from Products
+    where id = p_productId;
+end;
+

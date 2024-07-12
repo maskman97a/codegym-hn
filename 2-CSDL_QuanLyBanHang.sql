@@ -22,8 +22,7 @@ create table order_detail
 (
     oID         int,
     pID         int,
-    oDate       datetime,
-    oTotalPrice int,
+    odQTY       int,
     foreign key (oID) references orders (oID),
     foreign key (pID) references product (pID)
 );

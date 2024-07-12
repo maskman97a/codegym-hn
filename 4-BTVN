@@ -1,0 +1,64 @@
+1. In ra danh sách đơn hàng có tổng tiền là lớn nhất/nhỏ nhất
+- Lấy danh sách đơn hàng và tính tổng tiền
+select sum(od.priceEach * od.quantityOrdered) tong_tien
+      from orders o
+               join orderdetails od on o.orderNumber = od.orderNumber
+      group by o.orderNumber;
+
+- Tìm ra đơn hàng có tổng tiền lớn nhất
+select *
+from (select sum(od.priceEach * od.quantityOrdered) tong_tien, o.orderNumber
+      from orders o
+               join orderdetails od on o.orderNumber = od.orderNumber
+      group by o.orderNumber) a
+order by tong_tien desc
+limit 1;
+- Tìm ra đơn hàng có tổng tiền nhỏ nhất
+select *
+from (select sum(od.priceEach * od.quantityOrdered) tong_tien, o.orderNumber
+      from orders o
+               join orderdetails od on o.orderNumber = od.orderNumber
+      group by o.orderNumber) a
+order by tong_tien
+limit 1;
+
+2. Hiển thị thông tin sản phẩm được mua nhiều nhất
+- Tìm ra danh sách sản phẩm
+select productName
+from products;
+
+- Tìm ra danh sách sản phẩm được mua
+select productName
+from products p
+         inner join orderdetails od on p.productCode = od.productCode;
+
+- Tìm ra số lượng tương ứng của từng sản phẩm được mua
+select productName, sum(od.quantityOrdered)
+from products p
+         inner join orderdetails od on p.productCode = od.productCode
+group by p.productCode, p.productName;
+
+- Sắp xếp và lấy ra sản phẩm mua nhiều nhất
+select *
+from (select p.productCode, p.productName, sum(od.quantityOrdered) quantity_ordered
+      from products p
+               inner join orderdetails od on p.productCode = od.productCode
+      group by p.productCode, p.productName) a
+order by a.quantity_ordered desc
+limit 1;
+
+3. Tính doanh thu trung bình
+- Tim tong doanh thu theo tung nam
+select year(orderDate) as nam, sum(od.priceEach * od.quantityOrdered) doanh_thu
+      from orders o
+               join orderdetails od on o.orderNumber = od.orderNumber
+          and status = 'Resolved'
+      group by year(orderDate);
+
+- Tinh trung binh
+select avg(a.doanh_thu) doanh_thu_trung_binh
+from (select year(orderDate) as nam, sum(od.priceEach * od.quantityOrdered) doanh_thu
+      from orders o
+               join orderdetails od on o.orderNumber = od.orderNumber
+          and status = 'Resolved'
+      group by year(orderDate)) a;
